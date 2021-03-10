@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Aktualności zawierające informacje o bieżącej działalności.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='shop-item.css') }}">
+{% endblock %}
+
+{%block current%}
+<li class="nav-item active">
+  <a class="nav-link" href="/">Strona Główna</a>
+</li>
+{%endblock%}
+
+{% block categories %}
+<a href="/3">Wróć na stronę główną by zobaczyć kategorie </a>
+{% endblock %}
+
+{% block body %}
+<br><br><br>
+<div class="container">
+    <h1> Brakujące produkty w magazynie</h1>
+    <small>Aby przejść do produktu (tam możesz aktualizować magazyn), kliknij na wiersz, w którym się znajduje.<br>Wyświetlone zostały produkty, których ilość w magazynie jest mniejsza niż 10.</small>
+    <hr>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">ID produktu</th>
+            <th scope="col">Nazwa produktu</th>
+            <th scope="col">Rozmiar</th>
+            <th scope="col">Pozostała ilość</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+          <tr>
+            <th scope="row">{{product[0]}}</th>
+            <td>{{product[3]}}</td>
+            <td>{{product[2]}}</td>
+            <td>{{product[1]}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <hr>
+
+      <h1 class="mt-5"> Najaktywniejsi użytkownicy - zamówienia</h1>
+      <small>Tutaj zobaczysz trzech użytkowników, których REALIZOWANE zamówienia w tym momencie opiewają na największe kwoty.<br>Możesz np. zaproponować im rabat przy odbiorze przesyłki.</small>
+      <br>
+      <br>
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">ID użytkownika</th>
+            <th scope="col">Domyślny email</th>
+            <th scope="col">Imię i nazwisko</th>
+            <th scope="col">Kwota w zamówieniach</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+          <tr>
+            <th scope="row">{{user[0]}}</th>
+            <td>{{user[4]}}</td>
+            <td>{{user[1]}} {{user[2]}}</td>
+            <td>{{user[3]}} zł</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h1 class="mt-5"> Najaktywniejsi użytkownicy - opinie</h1>
+      <small>Tutaj zobaczysz trzech użytkowników, którzy wyrazili najwięcej opinii na temat produktów znajdujących się w Twoim sklepie*, a także ich średnią ocenę zostawianą w opiniach.</small>
+      <br>
+      <small>*Zostaną oni wyświetleni tylko wtedy, gdy ich średnia ocena jest większa niż 3/5. (Pozwoli to wybrać osoby pozytywnie wyrażające się na temat produktów).</small>
+      <br>
+      <br>
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">ID użytkownika</th>
+            <th scope="col">Domyślny email</th>
+            <th scope="col">Imię i nazwisko</th>
+            <th scope="col">Ilość opinii</th>
+            <th scope="col">Średnia ocena</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for user in users_opinions %}
+          <tr>
+            <th scope="row">{{user[1]}}</th>
+            <td>{{user[5]}}</td>
+            <td>{{user[2]}} {{user[3]}}</td>
+            <td>{{user[0]}}</td>
+            <td>{{user[4]}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+
+</div>
+<br>
+<br>
+
+{% endblock %}
+{% block user_options %}
+{% if user_is_authenticated==1 -%}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+<span class="user-name">Administrator</span>
+<a href="/data"> Dane osobiste</a>
+<a href="/add_producer"> Dodaj producenta</a>
+<a href="/add_new_product"> Dodaj produkt</a>
+<a href="/add_courier"> Dodaj kuriera</a>
+<a href="/statistics"> Statystyki</a>
+<a href="/orders"> Zamówienia do zrealizowania</a>
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+{% else -%}
+<a href="/login"> Zaloguj</a>
+<a href="/register"> Zarejestruj</a>
+<article> Składanie zamówień, dodawanie komentarzy i wiele innych dostępne będzie dla Ciebie po zalogowaniu.</article>
+{% endif %}
+{%endblock %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>

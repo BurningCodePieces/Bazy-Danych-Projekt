@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Aktualności zawierające informacje o bieżącej działalności.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
+
+{% block show_if_user_is_admin %}
+
+
+{%endblock%}
+
+{%block current%}
+<li class="nav-item active">
+    <a class="nav-link" href="/">Strona Główna</a>
+</li>
+{%endblock%}
+{% block categories %}
+{% for cat in categories %}
+{% if user_is_authenticated==1 -%}
+    <a href="/{{cat[1]}}"> {{cat[0]}} ({{cat[2]}})</a>
+{% else -%}
+    <a href="/{{cat[1]}}"> {{cat[0]}} ({{cat[2]}})</a>
+{% endif %}
+{% endfor %}
+{% if user_is_admin %}
+<a href="/add_category" class="text-success"><b> Dodaj kategorię</b></a>
+<a href="/categories" class="text-danger"> <b>Usuń kategorie</b></a>
+{% endif %}
+
+{% endblock %}
+
+{% block body %}
+<br><br><br>
+<div class="navbar navbar-dark box-shadow mt-n1 bg-primary" style="border:1px solid blue;">
+    <div class="container justify-content-between">
+        <a class="navbar-brand align-items-center m-auto">
+            {% if contents %}
+            <strong>Przeglądasz oferty w dziale: {{contents[0][6]}}</strong>
+            {% else %}
+            <strong>Ta kategoria jest pusta, sprawdź inne kategorie</strong>
+            {% endif %}
+        </a>
+
+    </div>
+</div>
+
+<div class="album py-4 " style="border:2px solid black;">
+    <div class="container-fluid">
+        <div class="row">
+            {% for content in contents %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow" style="border:1px solid black;" >
+                    <img class="card-img-top" src="{{ url_for('static', filename=content[5]) }}" width="300px" height="300px" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text md mt-n3">
+                            <b>{{content[2]}}</b>
+                            <br>
+                            Producent: <i>{{content[3]}}</i>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mt-n3">
+                            <div class="btn-group mt-1">
+                                <a href="/product/{{content[0]}}">
+                                <button type="button" class="btn btn-sm btn-outline-primary">Zobacz więcej</button>
+                            </a>
+                            </div>
+                            <small class="text-muted">Cena: {{content[1]}} zł</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if user_is_admin %}
+            <div class="col-md-4">
+                <a class="cardLinking" href="/add_new_product" style=" text-decoration: none;">
+                    <div class="card mb-4 box-shadow" style="border:1px solid black;" >
+                        <img class="card-img-top" src="{{ url_for('static', filename='plus.png') }}" width="300px" height="210px" alt="Card image cap">
+                        <div class="card-body">
+                            <div class="mt-1">
+                                <br>
+                                <div class="new_cat_text_wrapper">
+                                    <b>Dodaj nowy produkt!</b></div>
+                                <br>
+                                <p class="align-center">Po dodaniu nowe produkty wyświetlą się<br> na tej stronie
+                                    automatycznie.</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+{% block user_options %}
+{% if user_is_authenticated==1 -%}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+<span class="user-name">{{data['imie']}} {{data['nazwisko']}}</span>
+{% if not user_is_admin %}
+<a href="/my_cart"> Mój koszyk</a>
+<a href="/data"> Dane osobiste</a>
+<a href="/my_orders"> Moje zamówienia</a>
+{% else %}
+<a href="/data"> Dane osobiste</a>
+<a href="/add_producer"> Dodaj producenta</a>
+<a href="/add_new_product"> Dodaj produkt</a>
+<a href="/add_courier"> Dodaj kuriera</a>
+<a href="/statistics"> Statystyki</a>
+<a href="/orders"> Zamówienia do zrealizowania</a>
+{% endif %}
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+                {% else -%}
+                <a href="/login"> Zaloguj</a>
+<a href="/register"> Zarejestruj</a>
+<article> Składanie zamówień, dodawanie komentarzy i wiele innych dostępne będzie dla Ciebie po zalogowaniu.</article>
+                {% endif %}
+{%endblock %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>

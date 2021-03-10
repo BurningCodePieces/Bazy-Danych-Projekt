@@ -1,0 +1,6 @@
+applications:
+- name: projektbazy22101999
+  memory: 150M
+  command: python app.py
+  random-route: true
+  timeout: 180

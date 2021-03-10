@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Aktualności zawierające informacje o bieżącej działalności.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='shop-item.css') }}">
+<script>
+  function validateForm() {
+    var x = document.forms["myForm"]["rating"].value;
+    if (x == "") {
+      alert("Aby przesłać opinię, musisz zaznaczyć ilość gwiazdek");
+      return false;
+    }
+  }
+
+  window.onload = function () {
+    document.getElementById('starText').innerHTML = "Średnia ocena: " + '{{stars}}' + "/5";
+    if ('{{stars}}' > 4.5)
+      document.getElementById('star5real').checked = true;
+    else if ('{{stars}}' <= 4.5 && '{{stars}}' > 4.0)
+      document.getElementById('star4halfreal').checked = true;
+    else if ('{{stars}}' <= 4.0 && '{{stars}}' > 3.5)
+      document.getElementById('star4real').checked = true;
+    else if ('{{stars}}' <= 3.5 && '{{stars}}' > 3.0)
+      document.getElementById('star3halfreal').checked = true;
+    else if ('{{stars}}' <= 3 && '{{stars}}' > 2.5)
+      document.getElementById('star3real').checked = true;
+    else if ('{{stars}}' <= 2.5 && '{{stars}}' > 2.0)
+      document.getElementById('star2halfreal').checked = true;
+    else if ('{{stars}}' <= 2 && '{{stars}}' > 1.5)
+      document.getElementById('star2real').checked = true;
+    else if ('{{stars}}' <= 1.5 && '{{stars}}' > 1.0)
+      document.getElementById('star1halfreal').checked = true;
+    else if ('{{stars}}' <= 1 && '{{stars}}' > 0.5)
+      document.getElementById('star1real').checked = true;
+    else if ('{{stars}}' <= 0.5 && '{{stars}}' > 0.0)
+      document.getElementById('starhalfreal').checked = true;
+    else document.getElementById('starText').innerHTML = "Brak ocen";
+
+
+    stars = document.getElementsByName("rating");
+    if ('{{my_rating}}' > 4.5)
+      stars[0].checked = true;
+    else if ('{{my_rating}}' <= 4.5 && '{{my_rating}}' > 4.0)
+      stars[1].checked = true;
+    else if ('{{my_rating}}' <= 4.0 && '{{my_rating}}' > 3.5)
+      stars[2].checked = true;
+    else if ('{{my_rating}}' <= 3.5 && '{{my_rating}}' > 3.0)
+      stars[3].checked = true;
+    else if ('{{my_rating}}' <= 3 && '{{my_rating}}' > 2.5)
+      stars[4].checked = true;
+    else if ('{{my_rating}}' <= 2.5 && '{{my_rating}}' > 2.0)
+      stars[5].checked = true;
+    else if ('{{my_rating}}' <= 2 && '{{my_rating}}' > 1.5)
+      stars[6].checked = true;
+    else if ('{{my_rating}}' <= 1.5 && '{{my_rating}}' > 1.0)
+      stars[7].checked = true;
+    else if ('{{my_rating}}' <= 1 && '{{my_rating}}' > 0.5)
+      stars[8].checked = true;
+    else if ('{{my_rating}}' <= 0.5 && '{{my_rating}}' > 0.0)
+      stars[9].checked = true;
+    else {
+      if ('{{user_is_authenticated}}' != '0' && !'{{user_is_admin}}') {
+        document.getElementById('comment').innerHTML = "Dodaj komentarz";
+        document.getElementById('rate').innerHTML = "Dodaj ocenę";
+      }
+    }
+
+
+    if ('{{message}}' == "OPSET") {
+      alert("Twoja opinia została dodana!");
+    }
+    else if ('{{message}}' == "OPUPD") {
+      alert("Twoja opinia została uaktualniona!");
+    }
+    else if ('{{message}}' == "P0") {
+      alert("UPS! Ktoś Cię uprzedził, produkt o wybranym rozmiarze skończył się.");
+    }
+    else if ('{{message}}' == "CSET") {
+      alert("Produkt został dodany do koszyka.");
+    }
+
+    else if ('{{message}}' =="quantity") {
+      alert("Dodanie do magazynu nie powiodło się. Próbujesz dodać ujemną liczbę produktów do magazynu.");
+    }
+    else if ('{{message}}' =="remove") {
+      alert("Usuwanie produktu ze sklepu nie powiodło się. Prawdopodobnie znajduje sie on w czyimś zamówieniu. Spróbuj ponownie, gdy zostanie ono zrealizowane.");
+    }
+
+    else if ('{{message}}' !="") {
+      alert('{{message}}');
+    }
+    
+
+  };
+</script>
+{% endblock %}
+
+{%block current%}
+<li class="nav-item active">
+  <a class="nav-link" href="/">Strona Główna</a>
+</li>
+{%endblock%}
+
+{% block categories %}
+<a href="/3">Wróć na stronę główną by zobaczyć kategorie </a>
+{% endblock %}
+
+{% block body %}
+<br><br><br>
+<div class="container">
+
+  <div class="row">
+
+    <div class="col-lg-3">
+      <h2 class="mt-4">Producent:</h2>
+      <h4 class="my-2 text-muted"><i>{{info[3]}}</i></h4>
+      <hr>
+      <h2 class="mt-5"> Gwarancja:</h2>
+      <h5> Warunek gwarancji: </h5>
+      <h6 class="text-muted">{{warranty[0]}}</h6>
+      <h6> Czas gwarancji:</h6>
+      <h6 class="text-muted"> {{warranty[1]}} dni </h6>
+      <hr>
+      <h3> Dostępne rozmiary:</h3>
+      {% for size in sizes %}
+      {% if size[1]!=0 %}
+      <span> {{size[0]}} <small class="ml-1"><i> ({{size[1]}} szt)</i></small></span>
+      <br>
+      {% endif %}
+      {%endfor%}
+      {% if not sizes or number_of_products==0 %}
+      <span>Produkt aktualnie nie jest dostępny w żadnym rozmiarze.</span>
+      {% endif %}
+      <hr>
+      {% if user_is_authenticated and not user_is_admin %}
+
+      <form method="POST" action="#">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <h3> Wybierz rozmiar:</h3>
+        <select id="sizes" name="sizes">
+          {% if not sizes or number_of_products==0%}
+          <option value="none">Brak dostępnych rozmiarów</option>
+          {% else %}
+          {% for size in sizes%}
+          {% if size[1]!=0 %}
+          <option value="{{size[2]}}">Rozmiar {{size[0]}}</option>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+        </select>
+
+        {% endif %}
+        {% if user_is_authenticated and not user_is_admin%}
+          {% if number_of_products>0 %}
+            <input type="submit" name='btn' class="btn btn-primary w-100 p-3 mt-3" value="Dodaj do koszyka">
+          {% else %}
+            <input type="submit" name='btn' class="btn btn-primary w-100 p-3 mt-3" value="Dodaj do koszyka" disabled>
+          {% endif %}
+        
+      </form>
+      {% endif %}
+      {% if user_is_admin %}
+      <form method="POST" action="#">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <h3> Dodaj produkty:</h3>
+        {% for size in sizes %}
+        <div class="d-flex justify-content-between">
+        <label for="r{{size[2]}}">Rozmiar {{size[0]}}: </label>
+        <input type="number" name="quantity{{size[2]}}" id="r{{size[2]}}" min=0 max=100>
+      </div>
+        {% endfor %}
+        <input type="submit" name='btn' class="btn btn-primary w-100 p-3 mt-3" value="Dodaj do magazynu">
+        </form>
+        <a href="/remove/{{id}}"><button type="button" name='btn' class="btn btn-danger w-100 p-3 mt-3">Usuń ten produkt</button></a>
+        <small>Usunięcie produktu możliwe jest, gdy nie znajduje się on w żadnym zamówieniu.</small>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-9">
+
+      <div class="card mt-4">
+        <img class="card-img-top img-fluid" src="{{ url_for('static', filename=info[5]) }}" alt="">
+        <div class="card-body">
+          <h3 class="card-title">{{info[2]}}</h3>
+          <h4>{{info[1]}} zł</h4>
+          <p class="card-text">Dostępność na magazynie:
+            {% if sizes and number_of_products%}
+            <span class="text-success">TAK</span>
+            {% else %}
+            <span class="text-danger">NIE</span>
+            {%endif%}
+          </p>
+          <fieldset class="realRating">
+            <input type="radio" id="star5real" name="realRating" value="5" disabled /><label class="full" for="star5"
+              title="Awesome - 5 '{{stars}}'"></label>
+            <input type="radio" id="star4halfreal" name="realRating" value="4.5" disabled /><label class="half"
+              for="star4half" title="Pretty good - 4.5 '{{stars}}'"></label>
+            <input type="radio" id="star4real" name="realRating" value="4" disabled /><label class="full" for="star4"
+              title="Pretty good - 4 '{{stars}}'"></label>
+            <input type="radio" id="star3halfreal" name="realRating" value="3.5" disabled /><label class="half"
+              for="star3half" title="Meh - 3.5 '{{stars}}'"></label>
+            <input type="radio" id="star3real" name="realRating" value="3" disabled /><label class="full" for="star3"
+              title="Meh - 3 '{{stars}}'"></label>
+            <input type="radio" id="star2halfreal" name="realRating" value="2.5" disabled /><label class="half"
+              for="star2half" title="Kinda bad - 2.5 '{{stars}}'"></label>
+            <input type="radio" id="star2real" name="realRating" value="2" disabled /><label class="full" for="star2"
+              title="Kinda bad - 2 '{{stars}}'"></label>
+            <input type="radio" id="star1halfreal" name="realRating" value="1.5" disabled /><label class="half"
+              for="star1half" title="Meh - 1.5 '{{stars}}'"></label>
+            <input type="radio" id="star1real" name="realRating" value="1" disabled /><label class="full" for="star1"
+              title="Sucks big time - 1 star"></label>
+            <input type="radio" id="starhalfreal" name="realRating" value="0.5" disabled /><label class="half"
+              for="starhalf" title="Sucks big time - 0.5 '{{stars}}'"></label>
+          </fieldset>
+          <div id="starText" style="font-size:large;" class="pt-1"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <form method="POST" action="#" onsubmit="return validateForm()" name="myForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="card card-outline-secondary my-4 bg-light">
+          <div class="card-header bg-primary text-white">
+            Opinie o produkcie
+          </div>
+          <div class="card-body">
+            {%if opinions%}
+            {% for data in opinions %}
+            <span class="text-primary">Ocena:</span> {{data[3]}}/5
+            {% if data[0] %}
+            <p><span class="text-primary">Komentarz:</span> {{data[0]}}</p>
+            {% else %}
+            <p>Brak komentarza</p>
+            {% endif %}
+            <small class="text-muted">Przesłane przez <b> {{data[1]}} {{data[2]}}</b> dnia {{data[4]}}</small>
+            {% if user_is_admin %}
+            <br>
+            <br>
+            <input type="submit" name='btn' class="w-25 btn btn-danger mb-3 ml-1"
+              value="Usuń ten komentarz (User #{{data[5]}})">
+            {% endif %}
+            <hr>
+            {% endfor %}
+            {% else %}
+            <p>Produkt nie posiada jeszcze żadnych opinii.</p>
+            {% endif %}
+            {% if user_is_authenticated and not user_is_admin%}
+            <div class="my-5">
+              <h4 id="rate"> Zmień swoją ocenę: </h4>
+              <fieldset class="rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5"
+                  title="Awesome - 5 '{{stars}}'"></label>
+                <input type="radio" id="star4half" name="rating" value="4.5" /><label class="half" for="star4half"
+                  title="Pretty good - 4.5 '{{stars}}'"></label>
+                <input type="radio" id="star4" name="rating" value="4" /><label class="full" for="star4"
+                  title="Pretty good - 4 '{{stars}}'"></label>
+                <input type="radio" id="star3half" name="rating" value="3.5" /><label class="half" for="star3half"
+                  title="Meh - 3.5 '{{stars}}'"></label>
+                <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3"
+                  title="Meh - 3 '{{stars}}'"></label>
+                <input type="radio" id="star2half" name="rating" value="2.5" /><label class="half" for="star2half"
+                  title="Kinda bad - 2.5 '{{stars}}'"></label>
+                <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2"
+                  title="Kinda bad - 2 '{{stars}}'"></label>
+                <input type="radio" id="star1half" name="rating" value="1.5" /><label class="half" for="star1half"
+                  title="Meh - 1.5 '{{stars}}'"></label>
+                <input type="radio" id="star1" name="rating" value="1" /><label class="full" for="star1"
+                  title="Sucks big time - 1 star"></label>
+                <input type="radio" id="starhalf" name="rating" value="0.5" /><label class="half" for="starhalf"
+                  title="Sucks big time - 0.5 '{{stars}}'"></label>
+              </fieldset>
+            </div>
+            <h4 id="comment"> Zmień swój komentarz (opcjonalne): </h4>
+            <textarea class="form-control w-75" name="addComment" id="addComment" rows="5"
+              placeholder="Tu wpisz swoją opinię na temat produktu"></textarea>
+
+          </div>
+          <input type="submit" name='btn' class="w-25 btn btn-success mb-3 ml-4" value="Prześlij opinię">
+      </form>
+      <a class="d-block my-3 ml-4" style="text-decoration: none;" href="/3">
+        Powrót na stronę główną
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+{% block user_options %}
+{% if user_is_authenticated==1 -%}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+{% if not user_is_admin %}
+<span class="user-name">{{data[0]}} {{data[1]}}</span>
+<a href="/my_cart"> Mój koszyk</a>
+<a href="/data"> Dane osobiste</a>
+<a href="/my_orders"> Moje zamówienia</a>
+{% else %}
+<span class="user-name">Administrator</span>
+<a href="/data"> Dane osobiste</a>
+<a href="/add_producer"> Dodaj producenta</a>
+<a href="/add_new_product"> Dodaj produkt</a>
+<a href="/add_courier"> Dodaj kuriera</a>
+<a href="/statistics"> Statystyki</a>
+<a href="/orders"> Zamówienia do zrealizowania</a>
+{% endif %}
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+                {% else -%}
+                <a href="/login"> Zaloguj</a>
+<a href="/register"> Zarejestruj</a>
+<article> Składanie zamówień, dodawanie komentarzy i wiele innych dostępne będzie dla Ciebie po zalogowaniu.</article>
+{% endif %}
+{%endblock %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>

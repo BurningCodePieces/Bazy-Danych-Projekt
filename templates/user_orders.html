@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Aktualności zawierające informacje o bieżącej działalności.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='shop-cart.css') }}">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://use.fontawesome.com/c560c025cf.js"></script>
+{% endblock %}
+
+{%block current%}
+<li class="nav-item active">
+    <a class="nav-link" href="/">Strona Główna</a>
+</li>
+{%endblock%}
+
+{% block categories %}
+<a href="/3">Wróć na stronę główną by zobaczyć kategorie </a>
+{% endblock %}
+
+{% block body %}
+<br><br><br>
+{% for items in items_list %}
+<div class="container mt-n3 mb-5">
+    <div class="card shopping-cart">
+        <div class="card-header bg-dark text-light">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            Zamówienie #{{items[0][9]}}
+            <a href="/3/" class="btn btn-outline-info btn-sm pull-right" id="date1">Wróć do zakupów</a>
+            <div class="clearfix"></div>
+        </div>
+            <div class="card-body">
+                {% for item in items %}
+                <div class="row" id="{{item[0]}}.{{item[8]}}">
+
+                    <div class="col-12 col-sm-12 col-md-2 text-center">
+                        <a href="/product/{{item[0]}}" style="text-decoration: none;">
+                            <img class="img-responsive" src="{{ url_for('static', filename=item[5]) }}" alt="prewiew"
+                                width="80" height="80">
+                        </a>
+                    </div>
+
+                    <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-6">
+                        <a href="/product/{{item[0]}}" style="text-decoration: none; color:black;">
+                            <h4 class="product-name"><strong>{{item[4]}} <small> <i>{{item[7]}}</i></small></strong>
+                            </h4>
+                            <h4>
+                                <small>Rozmiar - {{item[3]}}</small>
+                            </h4>
+                        </a>
+                    </div>
+
+                    <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
+                        <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
+                            <h5><span class="text-muted"><strong>Zamówiono:</span></strong></h5>
+                        </div>
+                        <div class="col-4 col-sm-4 col-md-4">
+                            <div class="quantity">
+                                <input type="text"  value="{{item[2]}} szt" title="Qty"
+                                    class="qty" name="n{{item[0]}}.{{item[8]}}" id="n{{item[0]}}.{{item[8]}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {% endfor %}
+                {% if not items %}
+                Nie masz żadnych zamówień :)
+                {% endif %}
+            </div>
+        <div class="card-footer">
+            <div class="coupon col-md-5 col-sm-5 no-padding-left pull-left">
+                <div class="row">
+                    <div class="col-12">
+                        <small class="text-secondary"> Kwota do zapłacenia stanowi sumę kosztu produktów* i usługi transportu przez wybranego kuriera*.<br><small>*Pod uwagę brane są ceny obowiązujące w momencie składania zamówienia.</small></small>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <div class="pull-right" style="margin: 5px; margin-right:15px">
+                    Kwota do zapłacenia: <b>{{items[0][10]}} zł</b>
+                    <br>
+                    Przewidywana data dostarczenia: <b>{{items[0][11]}}</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% if not items_list %}
+<div class="container mt-n3 mb-5">
+    <div class="card shopping-cart">
+        <div class="card-header bg-dark text-light">
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            Brak zamówień
+            <a href="/3/" class="btn btn-outline-info btn-sm pull-right" id="date1">Wróć do zakupów</a>
+            <div class="clearfix"></div>
+        </div>
+            <div class="card-body">
+                Nie masz żadnych niezrealizowanych zamówień :)
+            </div>
+        <div class="card-footer">
+            <div class="coupon col-md-5 col-sm-5 no-padding-left pull-left">
+                <div class="row">
+                    <div class="col-12">
+                        <small class="text-secondary"> Kwota do zapłacenia stanowi sumę kosztu produktów* i usługi transportu przez wybranego kuriera*.<br><small>*Pod uwagę brane są ceny obowiązujące w momencie składania zamówienia.</small></small>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <div class="pull-right" style="margin: 5px; margin-right:15px">
+                    Kwota do zapłacenia: <b>{% if sum %} {{sum}} {% else %} 0 {%endif%}zł</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block user_options %}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+<span class="user-name">{{data[0]}} {{data[1]}}</span>
+<a href="/my_cart"> Mój koszyk</a>
+<a href="/data"> Dane osobiste</a>
+<a href="/my_orders"> Moje zamówienia</a>
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+{%endblock %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>

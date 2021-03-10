@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% block head %}{% endblock %}
+    <script>
+          window.onload = function () {
+        if ('{{message}}'=="adres"){
+            alert("Zamówienie nie zostało wysłane, gdyż nie masz przypisanego żadnego adresu. Dodaj go tutaj, a następnie spróbuj ponownie.")
+        }}
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark  fixed-navbar bg-dark" style="border-bottom:2px solid white">
+        <a class="navbar-brand text-light" href="/">Lumpex<span class="text-warning">{% block show_if_user_is_admin %}
+                {%endblock%}</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01"
+            aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExample01">
+            <ul class="navbar-nav mr-auto">
+                {% block current %}{%endblock%}
+                <!-- Here, depending on the current site, navbar will show which site user is at-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="flase">Kontakt</a>
+                    <div class="dropdown-menu background-fixing" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="https://www.facebook.com" target="blank">Facebook</a>
+                        <a class="dropdown-item" href="https://twitter.com/?lang=pl" target="blank">Twitter</a>
+                        <a class="dropdown-item" href="https://www.instagram.com/?hl=pl" target="blank">Instagram</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="flase">Panel Użytkownika</a>
+                    <div class="dropdown-menu background-fixing" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="/login">Zaloguj</a>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+  
+    <div class="main mt-5 bg-white p-5" style="border:2px solid black">
+      <h1>Dodaj adres</h1>
+      <small> Dodanie adresu pozwoli Ci wybierać go jako adres, na jaki chcesz składać zamówienia.</small>
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputCountry">Kraj*</label>
+            <input type="text" class="form-control" name="inputCountry" id="inputCountry" placeholder="Polska" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputCity">Miasto/wieś*</label>
+            <input type="text" class="form-control" name="inputCity" id="inputCity" placeholder="Warszawa" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputStreet">Ulica</label>
+          <input type="text" class="form-control" name="inputStreet" id="inputStreet" placeholder="">
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="inputBuilding">Numer budynku*</label>
+            <input type="number" min=0 max=1000 class="form-control" name="inputBuilding" id="inputBuilding" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputFlat">Numer mieszkania</label>
+            <input type="number" min=0 max=1000  class="form-control" name="inputFlat"  id="inputFlat">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Zapisz adres</button>
+      </form>
+      <a href="/data">
+        <small>
+        Nie to czego szukasz? Powrót.
+        </small>
+    </a>
+      </div>
+    <footer class="footer bg-white" id="xD">
+        <div class="container d-flex justify-content-center text-center">
+            <p>Zdjęcia prezentowane na stronie nie są moją własnością, wykorzystanie ich służy wyłącznie celom
+                dydaktycznym.<br>
+                Nie masz pomysłu na swój look? Zaglądnij na naszego <a href="#">Facebooka</a>.</p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Admin może dodać tutaj nowy produkt.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='delete_category.css') }}">
+<script>
+
+    function checkForm()
+    {
+        var x= document.querySelector('input[name="cats"]:checked');
+        var y= document.querySelector('input[name="sizes"]:checked');
+            if(!x)
+            {
+                alert("Musisz wybrać przynajmniej 1 kategorię produktu.")
+                return false;
+            }
+            if(!y)
+            {
+                alert("Musisz wybrać przynajmniej 1 rozmiar produktu.")
+                return false;
+            }
+    
+      return true;
+    }
+  </script>
+{% endblock %}
+
+{%block current%}
+<li class="nav-item active">
+    <a class="nav-link" href="/">Strona Główna</a>
+</li>
+{%endblock%}
+
+{% block categories %}
+<a href="/3">Wróć na stronę główną by zobaczyć kategorie </a>
+{% endblock %}
+
+{% block body %}
+<br><br><br>
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10 col-lg-10">
+            <div class="border">
+                <div class="question bg-white p-3 border-bottom">
+                    <div class=" mcq">
+                        <h4>Dodaj Nowy Produkt</h4>
+                        <small> Po dodaniu produktu, będzie on widoczny dla Ciebie i użytkowników.</small>
+                    </div>
+                </div>
+                <form method="POST" enctype='multipart/form-data' name="myForm" onsubmit="return checkForm();">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="question bg-white p-3 border-bottom">
+                        <div class="d-flex flex-row align-items-center question-title mb-3">
+                            <h3 class="text-danger">N.</h3>
+                            <h5 class="mt-1 ml-2 ">Nowy Produkt.</h5>
+                        </div>
+                        <div class="form-group">
+                            <label for="producer"><b>Nazwa Produktu</b></label>
+                            <input type="text" class="form-control cat" id="producer" name="producer"
+                                aria-describedby="Help" placeholder="Buty do biegania 'Janki' " required>
+                            <small id="Help" class="form-text text-muted">Pod tą nazwą produkt będzie widoczny dla
+                                Ciebie i użytkowników.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="price"><b>Cena Produktu</b></label>
+                            <input type="number" step="0.01" max="500" min="0" class="form-control description"
+                                name="price" id="price" placeholder="2.50" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="photo"><b>Zdjęcie produktu</b></label>
+                            <br>
+                            <input type='file' class='file-input' name='file_image' id='photo' required>
+                        </div>
+                        <hr>
+                        <div class="d-flex">
+                            <div>
+                                <legend><b>Wybierz kategorie produktu:</b></legend>
+                                {% for cat in cats %}
+                                <div>
+                                    <input type="checkbox" id="{{cat[1]}}" name="cats" value="{{cat[1]}}">
+                                    <label for="{{cat[1]}}">{{cat[0]}}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group mt-1 ml-5">
+                                <label for="prod">
+                                    <h4> <b>Wybierz producenta produktu:</b></h4>
+                                </label>
+                                <br>
+                                {% for prod in prods %}
+                                {% if prod==prods[0] %}
+                                <input type="radio" name="prod" value="{{prod[0]}}" id="c{{prod[0]}}" class="producer"
+                                    checked>
+                                {% else %}
+                                <input type="radio" name="prod" value="{{prod[0]}}" id="c{{prod[0]}}" class="producer">
+                                {% endif %}
+                                <label for="c{{prod[0]}}"> {{prod[1]}}</label>
+                                <br>
+                                {% endfor %}
+                                <small><a href="/add_producer">Nie ma tu tego producenta? Dodaj go tutaj.</a></small>
+                            </div>
+                        </div>
+                            <fieldset class="mr-5">
+                                <legend><b>Wybierz gwarancję produktu:</b></legend>
+                                {% for war in warranties %}
+                                <div>
+                                    {% if war==warranties[0] %}
+                                    <input type="radio" id="w{{war[0]}}" name="warranties" value="{{war[0]}}" checked>
+                                    {% else %}
+                                    <input type="radio" id="w{{war[0]}}" name="warranties" value="{{war[0]}}">
+                                    {% endif %}
+                                    <label for="w{{war[0]}}">{{war[1]}} - {{war[2]}} dni</label>
+                                </div>
+                                {% endfor %}
+                            </fieldset>
+                            <div class="form-group mt-1 ">
+                                <label for="sizes">
+                                    <h4> <b>Wybierz rozmiary produktu:</b></h4>
+                                </label>
+                                <br>
+                                {% for size in sizes %}
+                                <input type="checkbox" id="s{{size[0]}}" name="sizes" value="{{size[0]}}">
+                                <label for="s{{size[0]}}">{{size[1]}}</label>
+                                <br>
+                                {% endfor %}
+                            </div>
+
+
+                    </div>
+                    <div class="d-flex flex-row justify-content-between align-items-center py-3 px-4 bg-white"><input
+                            class="btn btn-primary d-flex align-items-center btn-success" type="submit"
+                            value="Dodaj produkt">
+                        </input><a href="/3/"><button
+                                class="btn btn-primary border-secondary align-items-center btn-secondary"
+                                type="button">STRONA GŁÓWNA</button></a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>
+{% endblock %}
+
+{% block user_options %}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+<span class="user-name">Administrator</span>
+<a href="/data"> Dane osobiste</a>
+<a href="/add_producer"> Dodaj producenta</a>
+<a href="/add_new_product"> Dodaj produkt</a>
+<a href="/add_courier"> Dodaj kuriera</a>
+<a href="/statistics"> Statystyki</a>
+<a href="/orders"> Zamówienia do zrealizowania</a>
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+{%endblock %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="../../assets/js/vendor/popper.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<script src="../../assets/js/vendor/holder.min.js"></script>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta name="description" content="Aktualności zawierające informacje o bieżącej działalności.">
+<title> Lumpex </title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+{% endblock %}
+
+
+{% block categories %}
+<a href="/3">Wróć na stronę główną by zobaczyć kategorie </a>
+{% endblock %}
+
+
+{% block body %}
+<div class="sorry-page bg-light ">
+    <div class="container">
+        <p class="display-4 text-center">Przykro nam, Twoja sesja wygasła lub nie masz uprawnień, by dostać się na tę
+            stronę. Zaloguj się i spróbuj ponownie.</p>
+            <div class="btn-grp-wrapper d-flex justify-content-center pb-5">
+                <div class="btn-group mt-5  " role="group">
+                    <a href="/login">
+                        <button type="button" class="btn btn-success px-5 py-3 mr-5 border border-danger">Zaloguj się</button>
+                    </a>
+                    <a href="/3">
+                        <button type="button" class="btn btn-primary  px-5 py-3 border border-danger">Strona główna</button>
+                    </a>
+            
+                </div>
+            </div>
+    </div>
+    
+</div>
+{% endblock %}
+{% block user_options %}
+{% if user_is_authenticated==1 -%}
+<span class="logged-in">Jesteś zalogowany jako:</span>
+{% if not user_is_admin %}
+<span class="user-name">{{dane[0]}} {{dane[1]}}</span>
+<a href="/my_cart"> Mój koszyk</a>
+<a href="/data"> Dane osobiste</a>
+<a href="/my_orders"> Moje zamówienia</a>
+{% else %}
+<span class="user-name">Administrator</span>
+<a href="/data"> Dane osobiste</a>
+<a href="/add_producer"> Dodaj producenta</a>
+<a href="/add_new_product"> Dodaj produkt</a>
+<a href="/add_courier"> Dodaj kuriera</a>
+<a href="/statistics"> Statystyki</a>
+<a href="/orders"> Zamówienia do zrealizowania</a>
+{% endif %}
+<a href="/logout" onclick="alert('Zostałeś wylogowany')"> Wyloguj</a>
+                {% else -%}
+                <a href="/login"> Zaloguj</a>
+<a href="/register"> Zarejestruj</a>
+<article> Składanie zamówień, dodawanie komentarzy i wiele innych dostępne będzie dla Ciebie po zalogowaniu.</article>
+{% endif %}
+{%endblock %}
