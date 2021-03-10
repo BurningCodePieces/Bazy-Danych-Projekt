@@ -6,4 +6,5 @@ python app.py
 
 
 Uwaga! Zdjęcia przykładowych produktów zawartych w projekcie nie są moją własnością, a ich wykorzystanie nie służy celom komercyjnym.
+Dane poufne zawarte w .env zostały zawarte w celu zaprezentowania działania projektu.
 
