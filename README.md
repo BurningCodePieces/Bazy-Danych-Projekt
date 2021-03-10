@@ -1,10 +1,12 @@
-﻿# Projekt studencki z przedmiotu Bazy Danych
+﻿# Batabases Student Project 
 
-Aby otworzyć projekt lokalnie, należy pobrać wszystkie pliki, zainstalować zależności zawarte w requirements.txt, a następnie uruchomić program poleceniem 
+It is a simple project implementing online shop. Any needed informations about the project are put in Documentation.pdf.
+ 
+
+In order to run the project locally, you need to clone/download the repo, install all dependencies listed in requirements.txt and run the program with command
 
 python app.py
 
-
-Uwaga! Zdjęcia przykładowych produktów zawartych w projekcie nie są moją własnością, a ich wykorzystanie nie służy celom komercyjnym.
-Dane poufne zawarte w .env zostały zawarte w celu zaprezentowania działania projektu.
+Warning! Sample images of products included in the project are not my property, using them is meant to be only for commercial purposes.
+Sensitive data included in .env were added in order to show the performance of the project. 
 
