@@ -1,6 +1,7 @@
 ﻿# Batabases Student Project 
 
-It is a simple project implementing online shop. Any needed informations about the project are put in Documentation.pdf.
+It is a simple project implementing online shop. Any needed informations about the project are put in file Dokumentacja Bazy Danych 1.pdf.
+Note: this file is written in polish, since it was one of the requirements.
  
 
 In order to run the project locally, you need to clone/download the repo, install all dependencies listed in requirements.txt and run the program with command
